@@ -1,0 +1,28 @@
+{
+  "imports": {
+    "oak": "https://deno.land/x/oak@v12.4.0/mod.ts"
+  },
+  "tasks": {
+    "run": "deno run --watch -A",
+    "test": "deno test -A --watch"
+  },
+  "fmt": {
+    "option": {
+      "useTabs": true,
+      "lineWidth": 120,
+      "indentWidth": 2,
+      "semiColons": false,
+      "singleQuote": true,
+      "proseWrap": "preserve"
+    },
+    "lint": {
+      "include": ["src/"],
+      "exclude": ["src/testdata/", "data/fixtures/**/*.ts"],
+      "rules": {
+        "tags": ["recommended"],
+        "include": ["ban-untagged-todo"],
+        "exclude": ["no-unused-vars"]
+      }
+    }
+  }
+}

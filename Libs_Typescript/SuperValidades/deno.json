@@ -1,0 +1,25 @@
+{
+  "tasks": {
+    "run": "deno run --watch -A",
+    "test": "deno test -A --watch"
+  },
+  "fmt": {
+    "option": {
+      "useTabs": true,
+      "lineWidth": 120,
+      "indentWidth": 2,
+      "semiColons": false,
+      "singleQuote": true,
+      "proseWrap": "preserve"
+    },
+    "lint": {
+      "include": ["src/", "modules/"],
+      "exclude": [],
+      "rules": {
+        "tags": ["recommended"],
+        "include": ["ban-untagged-todo"],
+        "exclude": ["no-explicit-any"]
+      }
+    }
+  }
+}
