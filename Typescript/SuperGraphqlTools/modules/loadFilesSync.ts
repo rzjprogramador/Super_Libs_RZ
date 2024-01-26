@@ -1,3 +1,7 @@
-import { loadFilesSync } from "npm:@graphql-tools/load-files@^7.0.0"
+import { loadFilesSync } from "npm:@graphql-tools/load-files@^6.5.4"
 
 export { loadFilesSync }
+
+/*
+  * fonte: graphqlTools >>
+*/
