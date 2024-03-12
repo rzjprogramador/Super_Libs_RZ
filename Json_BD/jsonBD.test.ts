@@ -4,11 +4,11 @@ import { JsonBD } from "./jsonBD.ts";
 // TODO: FAZER TEST DE GRAVACAO SOMENTE UMA VEZ NO ARQUIVO JSON...SE JA GRAVOU NAO GRAVAR MAIS.
 
 const sut = JsonBD.instance()
-const sutMsgErrorRead = JsonBD.msgErroRead
-const sutMsgErrorPost = JsonBD.msgErroPost
+const sutClass = JsonBD
 const fileJsonBD = 'bd/json/data.json'
 const fileJsonBDFAIL = 'bdxxxxxx/json/data.json'
 const bd: any[] = await sut.read(fileJsonBD)
+const idNotExist = '9999'
 
 Deno.test({
   name: "[ read ] deve ler o arquivo json e devolver um objeto de instancia de Array e nao uma string.",
@@ -47,7 +47,7 @@ Deno.test({
       }
     }
     console.log(await tryPost())
-    expect(await tryPost()).toEqual(sutMsgErrorPost)
+    expect(await tryPost()).toEqual(sutClass.msgErroPost)
   },
 
 });
@@ -56,7 +56,7 @@ Deno.test({
   name: "[ update ] deve atualizar o objeto encontrado.",
   only: false,
   async fn() {
-    const nomeUp = "mudei4"
+    const nomeUp = "mudei_somente_o_Nome_1"
     const objUP = { nome: nomeUp, }
     const action = await sut.putUpdate(fileJsonBD, '1', objUP)
 
@@ -65,6 +65,58 @@ Deno.test({
     console.log("NOME DO PRIMEIRO", bd[0].nome)
 
     expect(getAll[0].nome).toBe(nomeUp)
+  },
+
+});
+
+Deno.test({
+  name: "[ update FAIL ] não deve atualizar elemento não encontrado.",
+  only: false,
+  async fn() {
+    async function tryUpdate() {
+      try {
+        const nomeUp = "mudei_somente_o_Nome_2"
+        const objUP = { nome: nomeUp, }
+        await sut.putUpdate(fileJsonBD, idNotExist, objUP)
+      } catch (e) {
+        return e.message
+      }
+    }
+    expect(await tryUpdate()).toEqual(sutClass.msgErroNotfound)
+  },
+
+});
+
+Deno.test({
+  name: "[ delete ] deve deletar o objeto encontrado.",
+  only: false,
+  async fn() {
+    const idRequest = '4'
+    const deleteThis = { id: idRequest, nome: 'DELETAR', sobrenome: 'Deletar' }
+    await sut.post(fileJsonBD, deleteThis)
+    await sut.delete(fileJsonBD, idRequest)
+
+    const getAll: any[] = await sut.getAll(fileJsonBD)
+
+    expect(getAll.length).toBe(2)
+  },
+
+});
+
+Deno.test({
+  name: "[ delete FAIL ] não deve deletar elemento não encontrado.",
+  only: false,
+  async fn() {
+
+    async function tryDelete() {
+      try {
+        await sut.delete(fileJsonBD, idNotExist)
+      } catch (e) {
+        return e.message
+      }
+    }
+
+    expect(await tryDelete()).toEqual(sutClass.msgErroNotfound)
   },
 
 });

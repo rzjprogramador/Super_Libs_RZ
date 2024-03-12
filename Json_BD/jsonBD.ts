@@ -1,12 +1,19 @@
 // deno-lint-ignore-file prefer-const
 export class JsonBD {
   static readonly msgErroRead = "Ops, Erro Leitura de Arquivo"
-  static readonly msgErroPost = "Ops, Erro Post inserir dado no Arquivo"
   static readonly msgErroSave = "Ops, Erro Save não salva dado no Arquivo"
-  static readonly msgErroUpdate = "Ops, Erro Update não atualiza dado no Arquivo"
+  static readonly msgErroPost = "Ops, Erro Post inserir dado no Arquivo"
+  static readonly msgErroNotfound = "Ops, Não encontrado!"
+  // obs: erros post e delete nao precisa de msg porque vao repassar o erro após verificar se encontrou o solicitado.
 
   static instance() {
     return new JsonBD()
+  }
+
+  useVerificationFindIndex(index: number) {
+    if (index < 0) {
+      throw new Error(`${JsonBD.msgErroNotfound}`)
+    }
   }
 
   /**
@@ -70,12 +77,27 @@ export class JsonBD {
       const currentContent: any[] = await this.read(filePath)
       let objSelect = currentContent.find((i) => i.id === id)
       let selectItem = currentContent.findIndex((i) => i.id === id)
+      this.useVerificationFindIndex(selectItem)
       currentContent[selectItem] = { ...objSelect, ...newObj }
       await this.saveBD(filePath, currentContent)
       return
 
     } catch (e) {
-      throw new Error(`${JsonBD.msgErroUpdate}`)
+      throw e
+    }
+  }
+
+  async delete(filePath: string, id: string) {
+    try {
+      const currentContent: any[] = await this.read(filePath)
+      let selectItem = currentContent.findIndex((i) => i.id === id)
+      this.useVerificationFindIndex(selectItem)
+      await currentContent.splice(selectItem, 1)
+      await this.saveBD(filePath, currentContent)
+      return true
+
+    } catch (e) {
+      throw e
     }
   }
 
