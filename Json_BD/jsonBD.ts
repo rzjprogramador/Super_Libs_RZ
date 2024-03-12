@@ -1,7 +1,9 @@
+// deno-lint-ignore-file prefer-const
 export class JsonBD {
   static readonly msgErroRead = "Ops, Erro Leitura de Arquivo"
   static readonly msgErroPost = "Ops, Erro Post inserir dado no Arquivo"
   static readonly msgErroSave = "Ops, Erro Save não salva dado no Arquivo"
+  static readonly msgErroUpdate = "Ops, Erro Update não atualiza dado no Arquivo"
 
   static instance() {
     return new JsonBD()
@@ -53,13 +55,27 @@ export class JsonBD {
    */
   async post(filePath: string, data: Object,) {
     try {
-      const currentContent = await this.read(filePath)
+      const currentContent: any[] = await this.read(filePath)
       await currentContent.push(data)
       await this.saveBD(filePath, currentContent)
       // return await currentContent
     } catch (e) {
       // console.error(e)
       throw new Error(`${JsonBD.msgErroPost}`)
+    }
+  }
+
+  async putUpdate(filePath: string, id: string, newObj: Object) {
+    try {
+      const currentContent: any[] = await this.read(filePath)
+      let objSelect = currentContent.find((i) => i.id === id)
+      let selectItem = currentContent.findIndex((i) => i.id === id)
+      currentContent[selectItem] = { ...objSelect, ...newObj }
+      await this.saveBD(filePath, currentContent)
+      return
+
+    } catch (e) {
+      throw new Error(`${JsonBD.msgErroUpdate}`)
     }
   }
 

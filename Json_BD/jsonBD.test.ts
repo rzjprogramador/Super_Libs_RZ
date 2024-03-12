@@ -8,6 +8,7 @@ const sutMsgErrorRead = JsonBD.msgErroRead
 const sutMsgErrorPost = JsonBD.msgErroPost
 const fileJsonBD = 'bd/json/data.json'
 const fileJsonBDFAIL = 'bdxxxxxx/json/data.json'
+const bd: any[] = await sut.read(fileJsonBD)
 
 Deno.test({
   name: "[ read ] deve ler o arquivo json e devolver um objeto de instancia de Array e nao uma string.",
@@ -36,7 +37,7 @@ Deno.test({
   name: "[ post FAIL] não deve criar este novo objeto passando o endereco de arquivo.json inexistente.",
   only: false,
   async fn() {
-    const newObject_NOT_SAVE = { nome: "fail", sobrenome: "failll" }
+    const newObject_NOT_SAVE = { id: "1000", nome: "fail", sobrenome: "failll" }
 
     async function tryPost() {
       try {
@@ -47,6 +48,23 @@ Deno.test({
     }
     console.log(await tryPost())
     expect(await tryPost()).toEqual(sutMsgErrorPost)
+  },
+
+});
+
+Deno.test({
+  name: "[ update ] deve atualizar o objeto encontrado.",
+  only: false,
+  async fn() {
+    const nomeUp = "mudei4"
+    const objUP = { nome: nomeUp, }
+    const action = await sut.putUpdate(fileJsonBD, '1', objUP)
+
+    const getAll: any[] = await sut.getAll(fileJsonBD)
+
+    console.log("NOME DO PRIMEIRO", bd[0].nome)
+
+    expect(getAll[0].nome).toBe(nomeUp)
   },
 
 });
