@@ -1,6 +1,8 @@
 import { expect } from "https://deno.land/x/expect@v0.2.10/expect.ts";
 import { JsonBD } from "./jsonBD.ts";
 
+// TODO: FAZER TEST DE GRAVACAO SOMENTE UMA VEZ NO ARQUIVO JSON...SE JA GRAVOU NAO GRAVAR MAIS.
+
 const sut = JsonBD.instance()
 const sutMsgErrorRead = JsonBD.msgErroRead
 const sutMsgErrorPost = JsonBD.msgErroPost
@@ -30,39 +32,17 @@ Deno.test({
 
 });
 
-// TODO: NESTE TEST >> PARAR DE GRAVAR NO ARQUIVO A CADA TEST RODADO.
-// Deno.test({
-//   name: "[ post OK] deve criar um novo objeto e inserir no arquivo json.",
-//   only: false,
-//   async fn() {
-//     const newObject = { nome: "nomeNovo2", sobrenome: "sobrenomeNovo2" }
-//     const newObject3 = { nome: "nomeNovo3", sobrenome: "sobrenomeNovo3" }
-
-//     async function tryPost() {
-//       try {
-//         const res = await sut.post(fileJsonBD, newObject)
-//         const res3 = await sut.post(fileJsonBD, newObject3)
-//         console.log("TODOS >>", res)
-//       } catch (error) {
-//         return error.message
-//       }
-//     }
-//     expect(await tryPost()).not.toThrow();
-//   },
-
-// });
-
 Deno.test({
   name: "[ post FAIL] não deve criar este novo objeto passando o endereco de arquivo.json inexistente.",
   only: false,
   async fn() {
-    const newObject = { nome: "fail", sobrenome: "failll" }
+    const newObject_NOT_SAVE = { nome: "fail", sobrenome: "failll" }
 
     async function tryPost() {
       try {
-        const res = await sut.post(fileJsonBDFAIL, newObject)
-      } catch (error) {
-        return error.message
+        const res = await sut.post(fileJsonBDFAIL, newObject_NOT_SAVE)
+      } catch (e) {
+        return e.message
       }
     }
     console.log(await tryPost())
@@ -70,3 +50,4 @@ Deno.test({
   },
 
 });
+

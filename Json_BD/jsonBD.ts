@@ -19,7 +19,7 @@ export class JsonBD {
       await Deno.writeFileSync(filePath, dataEnconderString)
       return
     } catch (e) {
-      console.error(e)
+      // console.error(e)
       throw new Error(`${JsonBD.msgErroSave}`)
     }
   }
@@ -36,7 +36,7 @@ export class JsonBD {
       const fileObj = JSON.parse(fileString)
       return fileObj
     } catch (e) {
-      console.error(e)
+      // console.error(e)
       throw new Error(`${JsonBD.msgErroRead}`)
     }
   }
@@ -58,7 +58,7 @@ export class JsonBD {
       await this.saveBD(filePath, currentContent)
       // return await currentContent
     } catch (e) {
-      console.error(e)
+      // console.error(e)
       throw new Error(`${JsonBD.msgErroPost}`)
     }
   }
