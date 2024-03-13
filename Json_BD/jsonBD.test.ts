@@ -1,7 +1,7 @@
 import { expect } from "https://deno.land/x/expect@v0.2.10/expect.ts";
 import { JsonBD } from "./jsonBD.ts";
 
-// TODO: FAZER TEST DE GRAVACAO SOMENTE UMA VEZ NO ARQUIVO JSON...SE JA GRAVOU NAO GRAVAR MAIS.
+// TODO: fazer post de criacao novo ..mas sem ficar recriando a cada test
 
 const sut = JsonBD.instance()
 const sutClass = JsonBD
@@ -41,13 +41,51 @@ Deno.test({
 
     async function tryPost() {
       try {
-        const res = await sut.post(fileJsonBDFAIL, newObject_NOT_SAVE)
+        return await sut.post(fileJsonBDFAIL, newObject_NOT_SAVE)
       } catch (e) {
         return e.message
       }
     }
     console.log(await tryPost())
     expect(await tryPost()).toEqual(sutClass.msgErroPost)
+  },
+
+});
+
+Deno.test({
+  name: "[ post FAIL] TODO : não deve recriar elemento que ja existe.",
+  only: false,
+  async fn() {
+    const duplicate = { id: "2", nome: "any2", sobrenome: "any" }
+
+    async function tryPost() {
+      try {
+        return await sut.post(fileJsonBD, duplicate)
+      } catch (e) {
+        return e.message
+      }
+    }
+    // console.log(await tryPost())
+    expect(await tryPost()).toEqual(sutClass.msgErroPost)
+  },
+
+});
+
+Deno.test({
+  name: "[ post ok] TODO : deve inserir este novo elemento sem retornar Erro.",
+  only: false,
+  async fn() {
+    const postObject = { id: "3", nome: "any3", sobrenome: "any" }
+
+    async function tryPost() {
+      try {
+        return await sut.post(fileJsonBD, postObject)
+      } catch (e) {
+        return e.message
+      }
+    }
+    // console.log(await tryPost())
+    expect(await tryPost()).not.toThrow
   },
 
 });
@@ -98,7 +136,7 @@ Deno.test({
 
     const getAll: any[] = await sut.getAll(fileJsonBD)
 
-    expect(getAll.length).toBe(2)
+    expect(getAll.length).toBe(3)
   },
 
 });

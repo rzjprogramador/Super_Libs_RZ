@@ -1,4 +1,4 @@
-// deno-lint-ignore-file prefer-const
+// deno-lint-ignore-file prefer-const no-extra-boolean-cast
 export class JsonBD {
   static readonly msgErroRead = "Ops, Erro Leitura de Arquivo"
   static readonly msgErroSave = "Ops, Erro Save não salva dado no Arquivo"
@@ -10,7 +10,15 @@ export class JsonBD {
     return new JsonBD()
   }
 
-  useVerificationFindIndex(index: number) {
+  async useExist(arr: any[], idData: any) {
+    const duplicate = arr.find((i) => i.id == idData?.id)
+    if (!!duplicate) {
+      throw new Error()
+      // atencao : nao consegui testar msg personalizada
+    }
+  }
+
+  async useVerificationFindIndex(index: number) {
     if (index < 0) {
       throw new Error(`${JsonBD.msgErroNotfound}`)
     }
@@ -60,11 +68,13 @@ export class JsonBD {
    * @input { filePath } add string com o caminho do arquivo apartir da raiz ex: 'data_exemplos/data.json'
    * @returns devolverá o arquivo em objeto javascript onde poderemos desencadear suas props.
    */
-  async post(filePath: string, data: Object,) {
+  async post(filePath: string, data: any,) {
     try {
       const currentContent: any[] = await this.read(filePath)
+      await this.useExist(currentContent, data)
       await currentContent.push(data)
       await this.saveBD(filePath, currentContent)
+
       // return await currentContent
     } catch (e) {
       // console.error(e)
@@ -77,7 +87,7 @@ export class JsonBD {
       const currentContent: any[] = await this.read(filePath)
       let objSelect = currentContent.find((i) => i.id === id)
       let selectItem = currentContent.findIndex((i) => i.id === id)
-      this.useVerificationFindIndex(selectItem)
+      await this.useVerificationFindIndex(selectItem)
       currentContent[selectItem] = { ...objSelect, ...newObj }
       await this.saveBD(filePath, currentContent)
       return
@@ -91,7 +101,7 @@ export class JsonBD {
     try {
       const currentContent: any[] = await this.read(filePath)
       let selectItem = currentContent.findIndex((i) => i.id === id)
-      this.useVerificationFindIndex(selectItem)
+      await this.useVerificationFindIndex(selectItem)
       await currentContent.splice(selectItem, 1)
       await this.saveBD(filePath, currentContent)
       return true
