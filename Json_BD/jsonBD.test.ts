@@ -1,7 +1,7 @@
 import { expect } from "https://deno.land/x/expect@v0.2.10/expect.ts";
 import { JsonBD } from "./jsonBD.ts";
 
-// TODO: fazer post de criacao novo ..mas sem ficar recriando a cada test
+// TODO: fazer post de criacao novo ..mas sem ficar recriando a cada test - before e after lembrar como usar
 
 const sut = JsonBD.instance()
 const sutClass = JsonBD
@@ -137,6 +137,7 @@ Deno.test({
     const getAll: any[] = await sut.getAll(fileJsonBD)
 
     expect(getAll.length).toBe(3)
+    // TODO : fazer outra verificacao.
   },
 
 });
